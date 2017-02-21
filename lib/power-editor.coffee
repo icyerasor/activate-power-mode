@@ -24,12 +24,21 @@ module.exports =
       else
         @comboMode.destroy()
 
+    @hueEnabledSubscription = atom.config.observe 'activate-power-mode.hue.enabled', (value) =>
+      @isHueEnabled = value
+      console.log(value)
+      if @isHueEnabled and @editorElement
+        @comboMode.setup @editorElement
+      else
+        @comboMode.destroy()
+
     @subscribeToActiveTextEditor()
 
   disable: ->
     @activeItemSubscription?.dispose()
     @editorChangeSubscription?.dispose()
     @comboModeEnabledSubscription?.dispose()
+    @hueEnabledSubscription?.dispose()
     @editorAddCursor?.dispose()
     @powerCanvas.destroy()
     @comboMode.destroy()

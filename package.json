@@ -15,6 +15,7 @@
     "lodash.defer": "^4.1.0",
     "lodash.random": "^3.1.5",
     "lodash.sample": "^4.2.1",
-    "lodash.throttle": "^4.0.1"
+    "lodash.throttle": "^4.0.1",
+    "philips-hue": "^1.2.0"
   }
 }

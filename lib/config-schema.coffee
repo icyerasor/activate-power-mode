@@ -5,6 +5,34 @@ module.exports =
     type: "boolean"
     default: true
 
+  hue:
+    type: "object"
+    properties:
+      enabled:
+        title: "Hue integration"
+        description: "When enabled every combo mode trigger will also change your hue lights"
+        type: "boolean"
+        default: true
+        order: 1
+
+      hueBridgeIp:
+        title: "Hue Bridge Ip"
+        description: "The ip of your hue bridge"
+        type: "string"
+        default: "192.168.0.6"
+
+      hueUser:
+        title: "Hue user"
+        description: "The user / token for your hue bridge"
+        type: "string"
+        default: "XhzznnJAueuZu13hn!"
+
+      lights:
+        title: "Light ids"
+        description: "ids of the lights that will be affected"
+        type: "array"
+        default: ["1", "2", "3", "4"]
+
   comboMode:
     type: "object"
     properties:

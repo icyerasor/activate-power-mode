@@ -1,6 +1,7 @@
 debounce = require "lodash.debounce"
 defer = require "lodash.defer"
 sample = require "lodash.sample"
+Hue = require('philips-hue');
 
 module.exports =
   currentStreak: 0
@@ -20,6 +21,7 @@ module.exports =
     @currentStreak = 0
     @reached = false
     @maxStreakReached = false
+    @hueEnabled = false
 
   createElement: (name, parent)->
     @element = document.createElement "div"
@@ -38,6 +40,11 @@ module.exports =
       @counter = @createElement "counter", @container
       @bar = @createElement "bar", @container
       @exclamations = @createElement "exclamations", @container
+      @hue = new Hue
+      @hue.bridge = @getHueConfig "hueBridgeIp"
+      @hue.username =  @getHueConfig "hueUser"
+      @hueEnabled = @getHueConfig "enabled"
+      @lights = @getHueConfig "lights"
 
       @streakTimeoutObserver?.dispose()
       @streakTimeoutObserver = atom.config.observe 'activate-power-mode.comboMode.streakTimeout', (value) =>
@@ -108,6 +115,7 @@ module.exports =
     exclamation.classList.add "exclamation"
     text = sample @getConfig "exclamationTexts" if text is null
     exclamation.textContent = text
+    @changeHueLight() if @hueEnabled
 
     @exclamations.insertBefore exclamation, @exclamations.childNodes[0]
     setTimeout =>
@@ -129,5 +137,15 @@ module.exports =
     @showExclamation "NEW MAX!!!" if @maxStreakReached is false
     @maxStreakReached = true
 
+  getHueConfig: (config) ->
+    atom.config.get "activate-power-mode.hue.#{config}"
+
   getConfig: (config) ->
     atom.config.get "activate-power-mode.comboMode.#{config}"
+
+  changeHueLight: ->
+    bri = Math.floor(Math.random() * 254)
+    hue = Math.floor(Math.random() * 65535)
+
+    for light in @lights
+      @hue.light(light).setState({hue: hue, sat: 254, bri: bri})
